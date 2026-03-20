@@ -17,3 +17,4 @@
 ## History
 
 <!-- Keep this updated. Earliest to latest -->
+- 2026-03-20: Initial Next.js and Tailwind setup committed and pushed to GitHub
