@@ -46,11 +46,13 @@ export type User = {
 // ─── Item Types ─────────────────────────────────────────
 
 export const itemTypes: ItemType[] = [
-  { id: "type-1", name: "Code Snippet", icon: "Code", color: "#22c55e", isSystem: true },
-  { id: "type-2", name: "Note", icon: "StickyNote", color: "#3b82f6", isSystem: true },
-  { id: "type-3", name: "Command", icon: "Terminal", color: "#f59e0b", isSystem: true },
-  { id: "type-4", name: "File", icon: "File", color: "#8b5cf6", isSystem: true },
-  { id: "type-5", name: "AI Prompt", icon: "Sparkles", color: "#ec4899", isSystem: true },
+  { id: "type-1", name: "Snippets", icon: "Code", color: "#22c55e", isSystem: true },
+  { id: "type-2", name: "Notes", icon: "StickyNote", color: "#3b82f6", isSystem: true },
+  { id: "type-3", name: "Commands", icon: "Terminal", color: "#f59e0b", isSystem: true },
+  { id: "type-4", name: "Files", icon: "File", color: "#8b5cf6", isSystem: true },
+  { id: "type-5", name: "Prompts", icon: "Sparkles", color: "#ec4899", isSystem: true },
+  { id: "type-6", name: "Images", icon: "Image", color: "#14b8a6", isSystem: true },
+  { id: "type-7", name: "Links", icon: "Link", color: "#f97316", isSystem: true },
 ];
 
 // ─── Tags ───────────────────────────────────────────────
