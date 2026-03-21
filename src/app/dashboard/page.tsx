@@ -1,10 +1,18 @@
 import { StatsCards } from "@/components/dashboard/StatsCards";
 import { CollectionCard } from "@/components/dashboard/CollectionCard";
 import { ItemCard } from "@/components/dashboard/ItemCard";
-import { collections, items } from "@/lib/mock-data";
+import { getCollections, getDashboardStats } from "@/lib/db/collections";
+import { items } from "@/lib/mock-data";
 
-export default function DashboardPage() {
-  const recentCollections = collections.slice(0, 4);
+export default async function DashboardPage() {
+  const [collections, stats] = await Promise.all([
+    getCollections(),
+    getDashboardStats(),
+  ]);
+
+  const recentCollections = collections.slice(0, 6);
+
+  // Items still use mock data — will be replaced in a future feature
   const pinnedItems = items.filter((item) => item.isPinned);
   const recentItems = items
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
@@ -13,7 +21,7 @@ export default function DashboardPage() {
   return (
     <div className="space-y-8">
       {/* Stats */}
-      <StatsCards />
+      <StatsCards stats={stats} />
 
       {/* Recent Collections */}
       <section>
