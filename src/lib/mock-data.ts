@@ -94,7 +94,7 @@ export function useDebounce<T>(value: T, delay: number) {
 }`,
     language: "typescript",
     isFavorite: true,
-    isPinned: false,
+    isPinned: true,
     itemType: itemTypes[0],
     tags: [tags[0], tags[1], tags[2]],
     createdAt: "2024-01-14T10:00:00Z",

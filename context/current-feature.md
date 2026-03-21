@@ -1,10 +1,19 @@
 # Current Feature
 
 ## Status
+In Progress
 
 ## Goals
+- Build the main content area (right side of dashboard)
+- Recent collections section
+- Pinned items section
+- 10 recent items section
+- 4 stats cards at the top (items, collections, favorite items, favorite collections)
 
 ## Notes
+- Use mock data from `src/lib/mock-data.js` (import directly until database is implemented)
+- Refer to `context/screenshots/dashboard-ui-main.png` for visual reference
+- Stats cards are not in the screenshot — new addition
 
 ## History
 
