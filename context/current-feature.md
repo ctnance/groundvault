@@ -1,11 +1,23 @@
 # Current Feature
 
 ## Status
-Complete
+In Progress
 
 ## Goals
 
+- Create `prisma/seed.ts` to populate the database with sample data for development and demos
+- Seed a demo user (demo@groundvault.io / 12345678, hashed with bcryptjs 12 rounds)
+- Seed 7 system item types: snippet, prompt, command, note, file, image, link (with Lucide icons and hex colors)
+- Seed 5 collections with associated items:
+  - **React Patterns** — 3 snippets (TypeScript hooks/patterns/utilities)
+  - **AI Workflows** — 3 prompts (code review, docs generation, refactoring)
+  - **DevOps** — 1 snippet, 1 command, 2 links (real URLs)
+  - **Terminal Commands** — 4 commands (git, docker, process, package manager)
+  - **Design Resources** — 4 links (real URLs for CSS/Tailwind, component libs, design systems, icons)
+
 ## Notes
+
+- See `context/features/seed-spec.md` for full specification
 
 ## History
 
