@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import type { Item } from "@/lib/mock-data";
+import type { ItemWithType } from "@/lib/db/items";
 
 const iconMap: Record<string, LucideIcon> = {
   Code,
@@ -24,7 +24,7 @@ const iconMap: Record<string, LucideIcon> = {
   Link: LinkIcon,
 };
 
-export function ItemCard({ item }: { item: Item }) {
+export function ItemCard({ item }: { item: ItemWithType }) {
   const Icon = iconMap[item.itemType.icon] ?? Code;
 
   return (
