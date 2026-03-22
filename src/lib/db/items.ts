@@ -1,16 +1,5 @@
 import { prisma } from "@/lib/prisma";
 
-// Temporary: use demo user until auth is set up
-const DEMO_EMAIL = "demo@groundvault.io";
-
-async function getDemoUserId(): Promise<string | null> {
-  const user = await prisma.user.findUnique({
-    where: { email: DEMO_EMAIL },
-    select: { id: true },
-  });
-  return user?.id ?? null;
-}
-
 export type ItemWithType = {
   id: string;
   title: string;
@@ -37,20 +26,16 @@ const itemSelect = {
   tags: { select: { id: true, name: true } },
 } as const;
 
-export async function getPinnedItems(): Promise<ItemWithType[]> {
-  const userId = await getDemoUserId();
-  if (!userId) return [];
-
+export async function getPinnedItems(userId: string, limit = 20): Promise<ItemWithType[]> {
   return prisma.item.findMany({
     where: { userId, isPinned: true },
     orderBy: { createdAt: "desc" },
+    take: limit,
     select: itemSelect,
   });
 }
 
-export async function getRecentItems(limit = 10): Promise<ItemWithType[]> {
-  const userId = await getDemoUserId();
-  if (!userId) return [];
+export async function getRecentItems(userId: string, limit = 10): Promise<ItemWithType[]> {
 
   return prisma.item.findMany({
     where: { userId },
@@ -71,17 +56,16 @@ export type SystemItemType = {
 };
 
 const TYPE_ORDER = [
-  "Snippets",
-  "Prompts",
-  "Commands",
-  "Notes",
-  "Files",
-  "Images",
-  "Links",
+  "snippet",
+  "prompt",
+  "command",
+  "note",
+  "file",
+  "image",
+  "link",
 ];
 
-export async function getSystemItemTypes(): Promise<SystemItemType[]> {
-  const userId = await getDemoUserId();
+export async function getSystemItemTypes(userId: string): Promise<SystemItemType[]> {
 
   const types = await prisma.itemType.findMany({
     where: { isSystem: true },
@@ -90,7 +74,7 @@ export async function getSystemItemTypes(): Promise<SystemItemType[]> {
       name: true,
       icon: true,
       color: true,
-      _count: { select: { items: userId ? { where: { userId } } : true } },
+      _count: { select: { items: { where: { userId } } } },
     },
   });
 

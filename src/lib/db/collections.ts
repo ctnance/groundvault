@@ -1,16 +1,5 @@
 import { prisma } from "@/lib/prisma";
 
-// Temporary: use demo user until auth is set up
-const DEMO_EMAIL = "demo@groundvault.io";
-
-async function getDemoUserId(): Promise<string | null> {
-  const user = await prisma.user.findUnique({
-    where: { email: DEMO_EMAIL },
-    select: { id: true },
-  });
-  return user?.id ?? null;
-}
-
 export type CollectionWithTypeCounts = {
   id: string;
   name: string;
@@ -20,13 +9,11 @@ export type CollectionWithTypeCounts = {
   types: { icon: string; color: string; count: number }[];
 };
 
-export async function getCollections(): Promise<CollectionWithTypeCounts[]> {
-  const userId = await getDemoUserId();
-  if (!userId) return [];
-
+export async function getCollections(userId: string, limit = 50): Promise<CollectionWithTypeCounts[]> {
   const collections = await prisma.collection.findMany({
     where: { userId },
     orderBy: { createdAt: "desc" },
+    take: limit,
     include: {
       items: {
         include: {
@@ -75,9 +62,7 @@ export type DashboardStats = {
   favoriteCollections: number;
 };
 
-export async function getDashboardStats(): Promise<DashboardStats> {
-  const userId = await getDemoUserId();
-  if (!userId) return { totalItems: 0, totalCollections: 0, favoriteItems: 0, favoriteCollections: 0 };
+export async function getDashboardStats(userId: string): Promise<DashboardStats> {
 
   const [totalItems, totalCollections, favoriteItems, favoriteCollections] =
     await Promise.all([
@@ -100,13 +85,11 @@ export type SidebarCollection = {
   dominantColor: string | null;
 };
 
-export async function getSidebarCollections(): Promise<SidebarCollection[]> {
-  const userId = await getDemoUserId();
-  if (!userId) return [];
-
+export async function getSidebarCollections(userId: string, limit = 20): Promise<SidebarCollection[]> {
   const collections = await prisma.collection.findMany({
     where: { userId },
     orderBy: { updatedAt: "desc" },
+    take: limit,
     include: {
       items: {
         include: {

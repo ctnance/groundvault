@@ -5,12 +5,6 @@ import Link from "next/link";
 import { useSidebar } from "./SidebarProvider";
 import {
   Code,
-  StickyNote,
-  Terminal,
-  File,
-  Sparkles,
-  Image,
-  Link as LinkIcon,
   Star,
   FolderOpen,
   PanelLeft,
@@ -31,18 +25,9 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { iconMap } from "@/lib/icon-map";
 import type { SystemItemType } from "@/lib/db/items";
 import type { SidebarCollection } from "@/lib/db/collections";
-
-const iconMap: Record<string, LucideIcon> = {
-  Code,
-  StickyNote,
-  Terminal,
-  File,
-  Sparkles,
-  Image,
-  Link: LinkIcon,
-};
 
 function getTypeSlug(name: string) {
   return name.toLowerCase().replace(/\s+/g, "-");

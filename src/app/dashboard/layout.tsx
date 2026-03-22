@@ -6,15 +6,19 @@ import { Sidebar, MobileSidebarToggle } from "@/components/dashboard/Sidebar";
 import { SidebarProvider } from "@/components/dashboard/SidebarProvider";
 import { getSidebarCollections } from "@/lib/db/collections";
 import { getSystemItemTypes } from "@/lib/db/items";
+import { getDemoUserId } from "@/lib/db/user";
 
 export default async function DashboardLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const userId = await getDemoUserId();
+  if (!userId) return <div className="p-8 text-muted-foreground">No user found.</div>;
+
   const [itemTypes, collections] = await Promise.all([
-    getSystemItemTypes(),
-    getSidebarCollections(),
+    getSystemItemTypes(userId),
+    getSidebarCollections(userId),
   ]);
 
   return (

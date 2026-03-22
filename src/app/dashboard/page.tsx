@@ -3,13 +3,17 @@ import { CollectionCard } from "@/components/dashboard/CollectionCard";
 import { ItemCard } from "@/components/dashboard/ItemCard";
 import { getCollections, getDashboardStats } from "@/lib/db/collections";
 import { getPinnedItems, getRecentItems } from "@/lib/db/items";
+import { getDemoUserId } from "@/lib/db/user";
 
 export default async function DashboardPage() {
+  const userId = await getDemoUserId();
+  if (!userId) return <div className="p-8 text-muted-foreground">No user found.</div>;
+
   const [collections, stats, pinnedItems, recentItems] = await Promise.all([
-    getCollections(),
-    getDashboardStats(),
-    getPinnedItems(),
-    getRecentItems(),
+    getCollections(userId),
+    getDashboardStats(userId),
+    getPinnedItems(userId),
+    getRecentItems(userId),
   ]);
 
   const recentCollections = collections.slice(0, 6);

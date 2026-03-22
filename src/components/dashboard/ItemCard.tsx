@@ -1,28 +1,8 @@
-import {
-  Code,
-  StickyNote,
-  Terminal,
-  File,
-  Sparkles,
-  Image,
-  Link as LinkIcon,
-  Pin,
-  Star,
-  type LucideIcon,
-} from "lucide-react";
+import { Code, Pin, Star } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { iconMap } from "@/lib/icon-map";
 import type { ItemWithType } from "@/lib/db/items";
-
-const iconMap: Record<string, LucideIcon> = {
-  Code,
-  StickyNote,
-  Terminal,
-  File,
-  Sparkles,
-  Image,
-  Link: LinkIcon,
-};
 
 export function ItemCard({ item }: { item: ItemWithType }) {
   const Icon = iconMap[item.itemType.icon] ?? Code;

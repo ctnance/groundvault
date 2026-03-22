@@ -30,7 +30,6 @@ async function main() {
   }
 
   console.log(`✓ User: ${user.name} (${user.email})`);
-  console.log(`  Password hash: ${user.password?.slice(0, 20)}...`);
   console.log(`  isPro: ${user.isPro}`);
   console.log(`  Email verified: ${user.emailVerified}`);
 

@@ -1,27 +1,7 @@
-import {
-  Code,
-  StickyNote,
-  Terminal,
-  File,
-  Sparkles,
-  Image,
-  Link as LinkIcon,
-  FolderOpen,
-  Star,
-  type LucideIcon,
-} from "lucide-react";
+import { Code, FolderOpen, Star } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { iconMap } from "@/lib/icon-map";
 import type { CollectionWithTypeCounts } from "@/lib/db/collections";
-
-const iconMap: Record<string, LucideIcon> = {
-  Code,
-  StickyNote,
-  Terminal,
-  File,
-  Sparkles,
-  Image,
-  Link: LinkIcon,
-};
 
 export function CollectionCard({ collection }: { collection: CollectionWithTypeCounts }) {
   // Border color from the most-used type, fallback to purple
