@@ -3,13 +3,12 @@ import { prisma } from "@/lib/prisma";
 // Temporary: use demo user until auth is set up
 const DEMO_EMAIL = "demo@groundvault.io";
 
-async function getDemoUserId() {
+async function getDemoUserId(): Promise<string | null> {
   const user = await prisma.user.findUnique({
     where: { email: DEMO_EMAIL },
     select: { id: true },
   });
-  if (!user) throw new Error("Demo user not found. Run `npm run db:seed` first.");
-  return user.id;
+  return user?.id ?? null;
 }
 
 export type CollectionWithTypeCounts = {
@@ -23,6 +22,7 @@ export type CollectionWithTypeCounts = {
 
 export async function getCollections(): Promise<CollectionWithTypeCounts[]> {
   const userId = await getDemoUserId();
+  if (!userId) return [];
 
   const collections = await prisma.collection.findMany({
     where: { userId },
@@ -77,6 +77,7 @@ export type DashboardStats = {
 
 export async function getDashboardStats(): Promise<DashboardStats> {
   const userId = await getDemoUserId();
+  if (!userId) return { totalItems: 0, totalCollections: 0, favoriteItems: 0, favoriteCollections: 0 };
 
   const [totalItems, totalCollections, favoriteItems, favoriteCollections] =
     await Promise.all([
@@ -101,6 +102,7 @@ export type SidebarCollection = {
 
 export async function getSidebarCollections(): Promise<SidebarCollection[]> {
   const userId = await getDemoUserId();
+  if (!userId) return [];
 
   const collections = await prisma.collection.findMany({
     where: { userId },

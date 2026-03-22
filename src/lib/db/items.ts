@@ -3,13 +3,12 @@ import { prisma } from "@/lib/prisma";
 // Temporary: use demo user until auth is set up
 const DEMO_EMAIL = "demo@groundvault.io";
 
-async function getDemoUserId() {
+async function getDemoUserId(): Promise<string | null> {
   const user = await prisma.user.findUnique({
     where: { email: DEMO_EMAIL },
     select: { id: true },
   });
-  if (!user) throw new Error("Demo user not found. Run `npm run db:seed` first.");
-  return user.id;
+  return user?.id ?? null;
 }
 
 export type ItemWithType = {
@@ -40,6 +39,7 @@ const itemSelect = {
 
 export async function getPinnedItems(): Promise<ItemWithType[]> {
   const userId = await getDemoUserId();
+  if (!userId) return [];
 
   return prisma.item.findMany({
     where: { userId, isPinned: true },
@@ -50,6 +50,7 @@ export async function getPinnedItems(): Promise<ItemWithType[]> {
 
 export async function getRecentItems(limit = 10): Promise<ItemWithType[]> {
   const userId = await getDemoUserId();
+  if (!userId) return [];
 
   return prisma.item.findMany({
     where: { userId },
@@ -89,7 +90,7 @@ export async function getSystemItemTypes(): Promise<SystemItemType[]> {
       name: true,
       icon: true,
       color: true,
-      _count: { select: { items: { where: { userId } } } },
+      _count: { select: { items: userId ? { where: { userId } } : true } },
     },
   });
 
