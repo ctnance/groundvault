@@ -24,6 +24,7 @@ import {
   SheetContent,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -216,6 +217,7 @@ function NavLink({
   count,
   color,
   iconClassName,
+  badge,
 }: {
   href: string;
   icon: LucideIcon;
@@ -224,6 +226,7 @@ function NavLink({
   count?: number;
   color?: string;
   iconClassName?: string;
+  badge?: React.ReactNode;
 }) {
   const content = (
     <Link
@@ -237,6 +240,7 @@ function NavLink({
       {!collapsed && (
         <>
           <span className="flex-1 truncate">{label}</span>
+          {badge}
           {count !== undefined && (
             <span className="text-xs text-muted-foreground">{count}</span>
           )}
@@ -304,6 +308,8 @@ function CollectionLink({
 
 // ─── Type Link (with color + count) ─────────────────────
 
+const proTypes = new Set(["file", "image"]);
+
 function TypeLink({
   type,
   collapsed,
@@ -312,6 +318,7 @@ function TypeLink({
   collapsed: boolean;
 }) {
   const Icon = iconMap[type.icon] ?? Code;
+  const isPro = proTypes.has(type.name.toLowerCase());
 
   return (
     <NavLink
@@ -321,6 +328,16 @@ function TypeLink({
       collapsed={collapsed}
       color={type.color}
       count={type.itemCount}
+      badge={
+        isPro ? (
+          <Badge
+            variant="secondary"
+            className="rounded-md px-1 py-px text-[10px] font-semibold tracking-wide"
+          >
+            PRO
+          </Badge>
+        ) : undefined
+      }
     />
   );
 }
