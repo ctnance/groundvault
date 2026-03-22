@@ -58,3 +58,54 @@ export async function getRecentItems(limit = 10): Promise<ItemWithType[]> {
     select: itemSelect,
   });
 }
+
+// ─── Item Types ─────────────────────────────────────────
+
+export type SystemItemType = {
+  id: string;
+  name: string;
+  icon: string;
+  color: string;
+  itemCount: number;
+};
+
+const TYPE_ORDER = [
+  "Snippets",
+  "Prompts",
+  "Commands",
+  "Notes",
+  "Files",
+  "Images",
+  "Links",
+];
+
+export async function getSystemItemTypes(): Promise<SystemItemType[]> {
+  const userId = await getDemoUserId();
+
+  const types = await prisma.itemType.findMany({
+    where: { isSystem: true },
+    select: {
+      id: true,
+      name: true,
+      icon: true,
+      color: true,
+      _count: { select: { items: { where: { userId } } } },
+    },
+  });
+
+  const mapped = types.map((t) => ({
+    id: t.id,
+    name: t.name,
+    icon: t.icon,
+    color: t.color,
+    itemCount: t._count.items,
+  }));
+
+  mapped.sort((a, b) => {
+    const ai = TYPE_ORDER.indexOf(a.name);
+    const bi = TYPE_ORDER.indexOf(b.name);
+    return (ai === -1 ? TYPE_ORDER.length : ai) - (bi === -1 ? TYPE_ORDER.length : bi);
+  });
+
+  return mapped;
+}

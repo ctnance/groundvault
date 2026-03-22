@@ -21,3 +21,4 @@ N/A
 - 2026-03-21: Seed script — demo user, 7 system item types, 5 collections with 17 items
 - 2026-03-21: Dashboard collections — replaced mock collection data with real Prisma queries, added db/collections.ts data layer, StatsCards accepts props, CollectionCard shows type-based border color and type icons
 - 2026-03-22: Dashboard items — replaced mock item data with real Prisma queries, added db/items.ts data layer with getPinnedItems/getRecentItems, updated ItemCard to use ItemWithType from db
+- 2026-03-22: Stats & sidebar — replaced mock sidebar data with real Prisma queries, added getSystemItemTypes/getSidebarCollections to db layer, sidebar shows item types with counts and collections with colored circles for recents, added "View all collections" link

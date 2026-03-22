@@ -12,7 +12,6 @@ import {
   Image,
   Link as LinkIcon,
   Star,
-  Clock,
   FolderOpen,
   PanelLeft,
   LayoutGrid,
@@ -31,13 +30,8 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import {
-  itemTypes,
-  items,
-  collections,
-  currentUser,
-  type ItemType,
-} from "@/lib/mock-data";
+import type { SystemItemType } from "@/lib/db/items";
+import type { SidebarCollection } from "@/lib/db/collections";
 
 const iconMap: Record<string, LucideIcon> = {
   Code,
@@ -53,16 +47,25 @@ function getTypeSlug(name: string) {
   return name.toLowerCase().replace(/\s+/g, "-");
 }
 
-function getItemCountForType(typeId: string) {
-  return items.filter((item) => item.itemType.id === typeId).length;
-}
+// ─── Props ──────────────────────────────────────────────
+
+type SidebarData = {
+  itemTypes: SystemItemType[];
+  collections: SidebarCollection[];
+};
 
 // ─── Sidebar Content (shared between desktop & mobile) ──
 
-function SidebarNav({ collapsed }: { collapsed: boolean }) {
+function SidebarNav({
+  collapsed,
+  data,
+}: {
+  collapsed: boolean;
+  data: SidebarData;
+}) {
   const [collectionsOpen, setCollectionsOpen] = useState(true);
-  const favoriteCollections = collections.filter((c) => c.isFavorite);
-  const recentCollections = collections.slice(0, 4);
+  const favoriteCollections = data.collections.filter((c) => c.isFavorite);
+  const recentCollections = data.collections.slice(0, 4);
 
   return (
     <div className="flex h-full flex-col">
@@ -86,7 +89,7 @@ function SidebarNav({ collapsed }: { collapsed: boolean }) {
           </span>
         )}
         <nav className="flex flex-col gap-0.5">
-          {itemTypes.map((type) => (
+          {data.itemTypes.map((type) => (
             <TypeLink key={type.id} type={type} collapsed={collapsed} />
           ))}
         </nav>
@@ -141,13 +144,10 @@ function SidebarNav({ collapsed }: { collapsed: boolean }) {
               </span>
             )}
             {recentCollections.map((col) => (
-              <NavLink
+              <CollectionLink
                 key={`recent-${col.id}`}
-                href={`/collections/${col.id}`}
-                icon={Clock}
-                label={col.name}
+                collection={col}
                 collapsed={collapsed}
-                count={col.itemCount}
               />
             ))}
 
@@ -157,7 +157,7 @@ function SidebarNav({ collapsed }: { collapsed: boolean }) {
                 All
               </span>
             )}
-            {collections.map((col) => (
+            {data.collections.map((col) => (
               <NavLink
                 key={`all-${col.id}`}
                 href={`/collections/${col.id}`}
@@ -167,6 +167,16 @@ function SidebarNav({ collapsed }: { collapsed: boolean }) {
                 count={col.itemCount}
               />
             ))}
+
+            {/* View all collections link */}
+            {!collapsed && (
+              <Link
+                href="/collections"
+                className="mt-2 block px-2 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
+              >
+                View all collections
+              </Link>
+            )}
           </nav>
         )}
       </div>
@@ -178,15 +188,15 @@ function SidebarNav({ collapsed }: { collapsed: boolean }) {
           className={`flex items-center gap-3 ${collapsed ? "justify-center" : "px-2"}`}
         >
           <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary text-sm font-medium text-primary-foreground">
-            {currentUser.name?.charAt(0) ?? "U"}
+            U
           </div>
           {!collapsed && (
             <div className="min-w-0">
               <p className="truncate text-sm font-medium text-foreground">
-                {currentUser.name}
+                Demo User
               </p>
               <p className="truncate text-xs text-muted-foreground">
-                {currentUser.email}
+                demo@groundvault.io
               </p>
             </div>
           )}
@@ -247,17 +257,61 @@ function NavLink({
   return content;
 }
 
+// ─── Collection Link (colored circle for recents) ───────
+
+function CollectionLink({
+  collection,
+  collapsed,
+}: {
+  collection: SidebarCollection;
+  collapsed: boolean;
+}) {
+  const content = (
+    <Link
+      href={`/collections/${collection.id}`}
+      className="flex items-center gap-3 rounded-md px-2 py-1.5 text-sm font-medium text-foreground/80 transition-colors hover:bg-accent hover:text-foreground"
+    >
+      <span
+        className="h-3 w-3 flex-shrink-0 rounded-full"
+        style={{
+          backgroundColor: collection.dominantColor ?? "var(--muted-foreground)",
+        }}
+      />
+      {!collapsed && (
+        <>
+          <span className="flex-1 truncate">{collection.name}</span>
+          {collection.itemCount > 0 && (
+            <span className="text-xs text-muted-foreground">
+              {collection.itemCount}
+            </span>
+          )}
+        </>
+      )}
+    </Link>
+  );
+
+  if (collapsed) {
+    return (
+      <Tooltip>
+        <TooltipTrigger render={<div />}>{content}</TooltipTrigger>
+        <TooltipContent side="right">{collection.name}</TooltipContent>
+      </Tooltip>
+    );
+  }
+
+  return content;
+}
+
 // ─── Type Link (with color + count) ─────────────────────
 
 function TypeLink({
   type,
   collapsed,
 }: {
-  type: ItemType;
+  type: SystemItemType;
   collapsed: boolean;
 }) {
   const Icon = iconMap[type.icon] ?? Code;
-  const count = getItemCountForType(type.id);
 
   return (
     <NavLink
@@ -266,7 +320,7 @@ function TypeLink({
       label={type.name}
       collapsed={collapsed}
       color={type.color}
-      count={count}
+      count={type.itemCount}
     />
   );
 }
@@ -291,7 +345,7 @@ export function MobileSidebarToggle() {
 
 // ─── Main Sidebar Export ────────────────────────────────
 
-export function Sidebar() {
+export function Sidebar({ data }: { data: SidebarData }) {
   const [collapsed, setCollapsed] = useState(false);
   const { mobileOpen, setMobileOpen } = useSidebar();
 
@@ -301,7 +355,7 @@ export function Sidebar() {
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
         <SheetContent side="left" className="w-60 p-0" showCloseButton>
           <SheetTitle className="sr-only">Navigation</SheetTitle>
-          <SidebarNav collapsed={false} />
+          <SidebarNav collapsed={false} data={data} />
         </SheetContent>
       </Sheet>
 
@@ -326,7 +380,7 @@ export function Sidebar() {
           </button>
         </div>
 
-        <SidebarNav collapsed={collapsed} />
+        <SidebarNav collapsed={collapsed} data={data} />
       </aside>
     </>
   );

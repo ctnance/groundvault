@@ -4,12 +4,19 @@ import { Input } from "@/components/ui/input";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Sidebar, MobileSidebarToggle } from "@/components/dashboard/Sidebar";
 import { SidebarProvider } from "@/components/dashboard/SidebarProvider";
+import { getSidebarCollections } from "@/lib/db/collections";
+import { getSystemItemTypes } from "@/lib/db/items";
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const [itemTypes, collections] = await Promise.all([
+    getSystemItemTypes(),
+    getSidebarCollections(),
+  ]);
+
   return (
     <TooltipProvider>
     <SidebarProvider>
@@ -45,7 +52,7 @@ export default function DashboardLayout({
 
         {/* Body: Sidebar + Main */}
         <div className="flex flex-1 overflow-hidden">
-          <Sidebar />
+          <Sidebar data={{ itemTypes, collections }} />
 
           {/* Main Content */}
           <main className="flex-1 overflow-y-auto px-10 py-6">
