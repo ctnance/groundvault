@@ -16,3 +16,11 @@ Read the following to get the full context of the project:
 - `npm run build` — production build
 - `npm run lint` — run ESLint
 - `npm start` — serve production build
+
+## Neon Database / Neon MCP
+
+When using the Neon MCP tools, always target the **development** branch by default:
+- Project ID: `billowing-silence-28411566`
+- Development branch ID: `br-ancient-paper-ame0x0yq`
+
+Only use the production branch (`br-polished-smoke-amhs6lda`) if explicitly requested.

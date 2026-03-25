@@ -1,13 +1,16 @@
+import { redirect } from "next/navigation";
+import { auth } from "@/auth";
 import { StatsCards } from "@/components/dashboard/StatsCards";
 import { CollectionCard } from "@/components/dashboard/CollectionCard";
 import { ItemCard } from "@/components/dashboard/ItemCard";
 import { getCollections, getDashboardStats } from "@/lib/db/collections";
 import { getPinnedItems, getRecentItems } from "@/lib/db/items";
-import { getDemoUserId } from "@/lib/db/user";
 
 export default async function DashboardPage() {
-  const userId = await getDemoUserId();
-  if (!userId) return <div className="p-8 text-muted-foreground">No user found.</div>;
+  const session = await auth();
+  if (!session?.user?.id) redirect("/sign-in");
+
+  const userId = session.user.id;
 
   const [collections, stats, pinnedItems, recentItems] = await Promise.all([
     getCollections(userId),

@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { signOut } from "next-auth/react";
 import { useSidebar } from "./SidebarProvider";
 import {
   Code,
@@ -10,6 +11,7 @@ import {
   PanelLeft,
   LayoutGrid,
   ChevronDown,
+  LogOut,
   type LucideIcon,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
@@ -25,6 +27,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { UserAvatar } from "@/components/UserAvatar";
 import { iconMap } from "@/lib/icon-map";
 import type { SystemItemType } from "@/lib/db/items";
 import type { SidebarCollection } from "@/lib/db/collections";
@@ -35,9 +38,16 @@ function getTypeSlug(name: string) {
 
 // ─── Props ──────────────────────────────────────────────
 
+type SidebarUserData = {
+  name: string;
+  email: string;
+  image?: string | null;
+};
+
 type SidebarData = {
   itemTypes: SystemItemType[];
   collections: SidebarCollection[];
+  user: SidebarUserData;
 };
 
 // ─── Sidebar Content (shared between desktop & mobile) ──
@@ -169,25 +179,70 @@ function SidebarNav({
 
       {/* User avatar area */}
       <Separator />
-      <div className="flex-shrink-0 px-3 py-3">
-        <div
-          className={`flex items-center gap-3 ${collapsed ? "justify-center" : "px-2"}`}
-        >
-          <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary text-sm font-medium text-primary-foreground">
-            U
+      <SidebarUser user={data.user} collapsed={collapsed} />
+    </div>
+  );
+}
+
+// ─── Sidebar User (avatar + dropdown) ───────────────────
+
+function SidebarUser({
+  user,
+  collapsed,
+}: {
+  user: SidebarUserData;
+  collapsed: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    }
+    if (open) document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [open]);
+
+  return (
+    <div ref={ref} className="relative flex-shrink-0 px-3 py-3">
+      <button
+        onClick={() => setOpen(!open)}
+        className={`flex w-full items-center gap-3 rounded-md p-1.5 transition-colors hover:bg-accent ${
+          collapsed ? "justify-center" : "px-2"
+        }`}
+      >
+        <UserAvatar name={user.name} image={user.image} />
+        {!collapsed && (
+          <div className="min-w-0 text-left">
+            <p className="truncate text-sm font-medium text-foreground">
+              {user.name}
+            </p>
+            <p className="truncate text-xs text-muted-foreground">
+              {user.email}
+            </p>
           </div>
-          {!collapsed && (
-            <div className="min-w-0">
-              <p className="truncate text-sm font-medium text-foreground">
-                Demo User
-              </p>
-              <p className="truncate text-xs text-muted-foreground">
-                demo@groundvault.io
-              </p>
-            </div>
-          )}
+        )}
+      </button>
+
+      {open && (
+        <div className="absolute bottom-full left-3 right-3 mb-1 rounded-md border border-border bg-popover p-1 shadow-md">
+          <Link
+            href="/profile"
+            onClick={() => setOpen(false)}
+            className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm text-foreground/80 transition-colors hover:bg-accent hover:text-foreground"
+          >
+            Profile
+          </Link>
+          <button
+            onClick={() => signOut({ callbackUrl: "/sign-in" })}
+            className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm text-foreground/80 transition-colors hover:bg-accent hover:text-foreground"
+          >
+            <LogOut className="h-4 w-4" />
+            Sign out
+          </button>
         </div>
-      </div>
+      )}
     </div>
   );
 }

@@ -1,4 +1,6 @@
+import { redirect } from "next/navigation";
 import { Search, Plus, Vault } from "lucide-react";
+import { auth } from "@/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -6,15 +8,16 @@ import { Sidebar, MobileSidebarToggle } from "@/components/dashboard/Sidebar";
 import { SidebarProvider } from "@/components/dashboard/SidebarProvider";
 import { getSidebarCollections } from "@/lib/db/collections";
 import { getSystemItemTypes } from "@/lib/db/items";
-import { getDemoUserId } from "@/lib/db/user";
 
 export default async function DashboardLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const userId = await getDemoUserId();
-  if (!userId) return <div className="p-8 text-muted-foreground">No user found.</div>;
+  const session = await auth();
+  if (!session?.user?.id) redirect("/sign-in");
+
+  const userId = session.user.id;
 
   const [itemTypes, collections] = await Promise.all([
     getSystemItemTypes(userId),
@@ -56,7 +59,15 @@ export default async function DashboardLayout({
 
         {/* Body: Sidebar + Main */}
         <div className="flex flex-1 overflow-hidden">
-          <Sidebar data={{ itemTypes, collections }} />
+          <Sidebar data={{
+            itemTypes,
+            collections,
+            user: {
+              name: session.user.name ?? "User",
+              email: session.user.email ?? "",
+              image: session.user.image,
+            },
+          }} />
 
           {/* Main Content */}
           <main className="flex-1 overflow-y-auto px-10 py-6">
