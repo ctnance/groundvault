@@ -1,27 +1,15 @@
-# Current Feature: Auth Setup — NextAuth + GitHub Provider
+# Current Feature
 
 ## Status
-In Progress
+Complete
 
 ## Goals
 
-- Install NextAuth v5 (`next-auth@beta`) and `@auth/prisma-adapter`
-- Set up split auth config pattern for edge compatibility
-- Add GitHub OAuth provider
-- Protect `/dashboard/*` routes using Next.js 16 proxy
-- Redirect unauthenticated users to sign-in
-- Use NextAuth's default pages for testing
+N/A
 
 ## Notes
 
-- Use `next-auth@beta` (not `@latest` which installs v4)
-- Proxy file must be at `src/proxy.ts` (same level as `app/`)
-- Use named export: `export const proxy = auth(...)` not default export
-- Use `session: { strategy: 'jwt' }` with split config pattern
-- Don't set custom `pages.signIn` — use NextAuth's default page
-- Files to create: `src/auth.config.ts`, `src/auth.ts`, `src/app/api/auth/[...nextauth]/route.ts`, `src/proxy.ts`, `src/types/next-auth.d.ts`
-- Env vars needed: `AUTH_SECRET`, `AUTH_GITHUB_ID`, `AUTH_GITHUB_SECRET`
-- Use Context7 to verify newest config and conventions
+N/A
 
 ## History
 
@@ -36,3 +24,4 @@ In Progress
 - 2026-03-22: Stats & sidebar — replaced mock sidebar data with real Prisma queries, added getSystemItemTypes/getSidebarCollections to db layer, sidebar shows item types with counts and collections with colored circles for recents, added "View all collections" link
 - 2026-03-22: Pro badge — added subtle PRO badge (shadcn/ui Badge, secondary variant) next to File and Image types in sidebar, badge prop on NavLink
 - 2026-03-22: Codebase cleanup — fixed data leak in getSystemItemTypes, centralized getDemoUserId into db/user.ts, added DATABASE_URL validation guard, fixed TYPE_ORDER to match seed names, deleted dead mock-data.ts, extracted shared iconMap to lib/icon-map.ts, removed password hash log, added default query limits
+- 2026-03-24: Auth Phase 1 — NextAuth v5 with GitHub OAuth, Prisma adapter, JWT strategy, split config for edge compatibility, proxy-based /dashboard route protection, session type extension
