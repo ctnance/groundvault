@@ -1,23 +1,15 @@
-# Current Feature — Auth Credentials (Email/Password)
+# Current Feature
 
 ## Status
-In Progress
+Complete
 
 ## Goals
 
-- Add Credentials provider for email/password authentication
-- Add password field to User model via migration (if not already there)
-- Update `auth.config.ts` with Credentials provider placeholder (`authorize: () => null`)
-- Update `auth.ts` to override Credentials with bcrypt validation
-- Create registration API route at `POST /api/auth/register` (name, email, password, confirmPassword)
-- Verify GitHub OAuth still works after changes
+N/A
 
 ## Notes
 
-- Use bcryptjs for hashing (already installed)
-- Split pattern: `auth.config.ts` gets placeholder, `auth.ts` gets real bcrypt logic
-- Registration validates passwords match, checks for existing user, hashes password, creates user
-- Test via curl and `/api/auth/signin` default page
+N/A
 
 ## History
 
@@ -33,3 +25,4 @@ In Progress
 - 2026-03-22: Pro badge — added subtle PRO badge (shadcn/ui Badge, secondary variant) next to File and Image types in sidebar, badge prop on NavLink
 - 2026-03-22: Codebase cleanup — fixed data leak in getSystemItemTypes, centralized getDemoUserId into db/user.ts, added DATABASE_URL validation guard, fixed TYPE_ORDER to match seed names, deleted dead mock-data.ts, extracted shared iconMap to lib/icon-map.ts, removed password hash log, added default query limits
 - 2026-03-24: Auth Phase 1 — NextAuth v5 with GitHub OAuth, Prisma adapter, JWT strategy, split config for edge compatibility, proxy-based /dashboard route protection, session type extension
+- 2026-03-25: Auth Phase 2 — Credentials provider for email/password auth, split pattern (placeholder in config, bcrypt in auth.ts), POST /api/auth/register with validation and hashing
