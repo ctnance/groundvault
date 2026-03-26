@@ -1,24 +1,15 @@
-# Current Feature — Email Verification on Register
+# Current Feature
 
 ## Status
-In Progress
+Complete
 
 ## Goals
 
-- On registration, send a verification email via Resend with a unique token link
-- User must click the link to verify their email before they can sign in
-- Unverified users are blocked from signing in with a clear error message
-- Verification link marks the user's email as verified in the database
-- Verification page at `/verify-email` handles the token and shows success/error
+N/A
 
 ## Notes
 
-- Using Resend for email delivery; RESEND_API_KEY is in .env
-- Store verification tokens in the existing VerificationToken model (identifier, token, expires)
-- Token should expire after a reasonable period (e.g., 24 hours)
-- Register flow: create user → generate token → send email → redirect to sign-in with message
-- Sign-in flow: check emailVerified before allowing credentials login
-- Verification link format: `/verify-email?token=<token>`
+N/A
 
 ## History
 
@@ -36,3 +27,4 @@ In Progress
 - 2026-03-24: Auth Phase 1 — NextAuth v5 with GitHub OAuth, Prisma adapter, JWT strategy, split config for edge compatibility, proxy-based /dashboard route protection, session type extension
 - 2026-03-25: Auth Phase 2 — Credentials provider for email/password auth, split pattern (placeholder in config, bcrypt in auth.ts), POST /api/auth/register with validation and hashing
 - 2026-03-25: Auth Phase 3 — Custom sign-in/register pages, reusable UserAvatar component, sidebar user menu with sign out, dashboard uses real auth session, toast notifications, GitHub avatar support
+- 2026-03-25: Email Verification — Resend integration, verification token generation, /verify-email page, unverified users blocked from sign-in, cleanup-users script
