@@ -52,7 +52,7 @@ export default function RegisterForm() {
       return;
     }
 
-    toast.success("Account created successfully! Please sign in.");
+    toast.success("Verification email sent! Please check your inbox.");
     router.push("/sign-in");
   }
 

@@ -36,7 +36,11 @@ export default function SignInForm() {
     setLoading(false);
 
     if (result?.error) {
-      setError("Invalid email or password.");
+      if (result.code === "EMAIL_NOT_VERIFIED" || result.error === "EMAIL_NOT_VERIFIED") {
+        setError("Please verify your email before signing in. Check your inbox.");
+      } else {
+        setError("Invalid email or password.");
+      }
       return;
     }
 
