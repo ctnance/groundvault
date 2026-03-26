@@ -1,23 +1,15 @@
-# Current Feature — Auth UI (Sign In, Register & Sign Out)
+# Current Feature
 
 ## Status
-In Progress
+Complete
 
 ## Goals
 
-- Custom sign-in page (`/sign-in`) with email/password fields, GitHub OAuth button, and link to register
-- Custom register page (`/register`) with name, email, password, confirm password fields and validation
-- Sidebar bottom: user avatar (GitHub image or initials fallback), user name, dropdown with sign out
-- Avatar click navigates to `/profile`
-- Reusable avatar component handling both image and initials cases
+N/A
 
 ## Notes
 
-- Form validation: passwords match, email format
-- Register submits to existing `/api/auth/register` endpoint
-- Register redirects to sign-in on success
-- Initials derived from name (e.g., "Brad Traversy" → "BT")
-- Replace NextAuth default pages with custom UI
+N/A
 
 ## History
 
@@ -34,3 +26,4 @@ In Progress
 - 2026-03-22: Codebase cleanup — fixed data leak in getSystemItemTypes, centralized getDemoUserId into db/user.ts, added DATABASE_URL validation guard, fixed TYPE_ORDER to match seed names, deleted dead mock-data.ts, extracted shared iconMap to lib/icon-map.ts, removed password hash log, added default query limits
 - 2026-03-24: Auth Phase 1 — NextAuth v5 with GitHub OAuth, Prisma adapter, JWT strategy, split config for edge compatibility, proxy-based /dashboard route protection, session type extension
 - 2026-03-25: Auth Phase 2 — Credentials provider for email/password auth, split pattern (placeholder in config, bcrypt in auth.ts), POST /api/auth/register with validation and hashing
+- 2026-03-25: Auth Phase 3 — Custom sign-in/register pages, reusable UserAvatar component, sidebar user menu with sign out, dashboard uses real auth session, toast notifications, GitHub avatar support
